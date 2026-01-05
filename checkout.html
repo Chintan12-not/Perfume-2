@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Checkout — E'MPIRE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-left"><span class="brand">E'MPIRE</span></div>
+    <div class="nav-right"><a href="index.html" class="btn ghost">← Back to Boutique</a></div>
+  </header>
+
+  <main class="container section">
+    <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 350px; gap: 40px; margin-top: 40px;">
+      <div class="checkout-form-container">
+        <h3>Shipping & Payment</h3>
+        <form class="contact-form">
+          <input type="text" placeholder="Full Name" required>
+          <input type="tel" placeholder="Phone" required>
+          <textarea placeholder="Address" required></textarea>
+          <div class="payment-options" style="margin: 20px 0;">
+            <label><input type="radio" name="pay" checked> UPI (GPay/PhonePe)</label><br>
+            <label><input type="radio" name="pay"> Card</label>
+          </div>
+          <button class="btn primary full-width">Place Order</button>
+        </form>
+      </div>
+
+      <div class="order-summary-card" style="background: #111; padding: 25px; border: 1px solid #333; border-radius: 12px;">
+        <h3>Summary</h3>
+        <div id="checkoutItems" style="margin-bottom: 20px;"></div>
+        <hr style="border: 0; border-top: 1px solid #222; margin-bottom: 20px;">
+        <div class="cart-total">Total: <span id="finalTotal" style="color: var(--gold-main); font-weight: bold;">₹0</span></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
