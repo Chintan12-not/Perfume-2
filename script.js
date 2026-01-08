@@ -1,66 +1,79 @@
-// Initialize cart and user from local storage
+// === 1. INITIALIZATION & DATA ===
 let cart = JSON.parse(localStorage.getItem('empire_cart')) || [];
 let currentUser = JSON.parse(localStorage.getItem('empire_user')) || null;
 
-// === 1. MASTER PRODUCT DATABASE ===
 const productDatabase = {
     'blush': {
+        id: 'blush',
         name: "Blush ELIXIR",
-        price: 4250,
+        price: 850,
+        originalPrice: 2800,
         img: 'images/Blush ELIXIR.jpg',
         tagline: "Soft • Floral • Elegant • Feminine • Luxurious",
         description: "Blush Elixir is soft, sensual, and irresistibly elegant. It opens with a delicate burst of fresh fruits and gentle florals...",
         details: "Romantic yet confident, sweet but never overpowering.",
         top: "Pink Berries, Lychee",
         heart: "Rose, Jasmine",
-        base: "Vanilla, Sandalwood"
+        base: "Vanilla, Sandalwood",
+        tags: ['floral', 'sweet', 'feminine', 'elegant']
     },
     'whisky': {
+        id: 'whisky',
         name: "Smoked Whisky",
-        price: 4899,
+        price: 850,
+        originalPrice: 2800,
         img: 'images/Smoked Whisky.jpg',
         tagline: "Bold • Smoky • Masculine • Intense",
         description: "A rich, complex blend of aged bourbon and charred oak.",
         details: "A rich, masculine scent featuring charred oak.",
         top: "Black Pepper",
         heart: "Whisky, Tobacco",
-        base: "Oak, Amber"
+        base: "Oak, Amber",
+        tags: ['smoky', 'woody', 'whisky', 'masculine'],
+        bestseller: true
     },
     'ocean': {
+        id: 'ocean',
         name: "Ocean Aura",
-        price: 3950,
+        price: 850,
+        originalPrice: 2800,
         img: 'images/Ocean Aura.jpg',
         tagline: "Fresh • Aquatic • Breezy",
         description: "The essence of the Mediterranean in a bottle.",
         details: "Inspired by coastal breezes.",
         top: "Sea Salt",
         heart: "Neroli",
-        base: "Driftwood"
+        base: "Driftwood",
+        tags: ['fresh', 'aquatic', 'summer', 'clean']
     },
     'oud': {
+        id: 'oud',
         name: "Royal Oud",
-        price: 4199,
+        price: 899,
+        originalPrice: 2900,
         img: 'images/p1.jpg',
         tagline: "Majestic • Spicy • Deep",
         description: "Liquid gold creation. Precious Cambodian Oud.",
         details: "An unmistakable aura of power.",
         top: "Saffron",
         heart: "Oud, Rosewood",
-        base: "Sandalwood"
+        base: "Sandalwood",
+        tags: ['oud', 'spicy', 'luxury', 'oriental']
     }
 };
 
-// === 2. INITIALIZATION ===
 window.onload = () => {
     updateCartUI();
     checkUser();
-    updateNavAuth(); // Calls the empty function as requested
+    updateNavAuth(); 
     
     const path = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
     if (path.includes('checkout.html')) renderCheckout();
-    if (path.includes('product-detail.html')) {
-        const productId = new URLSearchParams(window.location.search).get('id'); 
-        if (productId) renderProductDetail(productId);
+    if (path.includes('product-detail.html') && productId) {
+        renderProductDetail(productId);
     }
     
     initScrollReveal();
@@ -70,17 +83,19 @@ window.onload = () => {
     }
 };
 
-// === 3. AUTHENTICATION FUNCTIONS ===
-function updateNavAuth() {
-  // Sign-in removed as requested
-}
+// === 2. AUTHENTICATION ===
+function updateNavAuth() {} // Placeholder for future logic
 
 function checkUser() {
     currentUser = JSON.parse(localStorage.getItem('empire_user'));
     return currentUser;
 }
 
-// === 4. ENHANCED CART SYSTEM ===
+// === 3. CART SYSTEM ===
+function saveCart() { 
+    localStorage.setItem('empire_cart', JSON.stringify(cart)); 
+}
+
 function addToCart(name, price, qty = 1) {
     const existing = cart.find(item => item.name === name);
     if (existing) {
@@ -155,7 +170,7 @@ function removeFromCart(index) {
     toast(`${itemName} removed from selection`);
 }
 
-// === 5. PRODUCT NAVIGATION ===
+// === 4. PRODUCT RENDERING ===
 function viewProduct(productId) {
     window.location.href = `product-detail.html?id=${productId}`;
 }
@@ -177,7 +192,10 @@ function renderProductDetail(productId) {
         <div class="product-detail-info">
             <h1 class="product-detail-title">${product.name}</h1>
             <div class="product-tagline">${product.tagline}</div>
-            <div class="product-detail-price">₹${product.price.toLocaleString()}</div>
+            <div class="product-detail-price">
+                <span class="old-price">₹${product.originalPrice.toLocaleString()}</span>
+                <span class="new-price">₹${product.price.toLocaleString()}</span>
+            </div>
             <div class="product-description">
                 <p>${product.description}</p>
                 <p>${product.details}</p>
@@ -205,12 +223,13 @@ function renderProductDetail(productId) {
 
 function updateDetailQty(change) {
     const qtyElement = document.getElementById('detailQty');
+    if (!qtyElement) return;
     let qty = parseInt(qtyElement.innerText);
     qty = Math.max(1, qty + change);
     qtyElement.innerText = qty;
 }
 
-// === 6. SEARCH & UTILITIES ===
+// === 5. SEARCH & NAVIGATION ===
 function initSearch() {
     const navRight = document.querySelector('.nav-right');
     if (navRight && !document.querySelector('.search-container')) {
@@ -229,17 +248,57 @@ function initSearch() {
 }
 
 function performSearch(query = '') {
-    const searchTerm = query || document.getElementById('searchInput').value.toLowerCase();
+    const term = query.toLowerCase();
     const productCards = document.querySelectorAll('.product-card');
+    
     productCards.forEach(card => {
-        const title = card.querySelector('h3').textContent.toLowerCase();
-        const notes = card.querySelector('.scent-notes').textContent.toLowerCase();
-        card.style.display = (title.includes(searchTerm) || notes.includes(searchTerm)) ? 'block' : 'none';
+        const id = card.dataset.id;
+        const product = productDatabase[id];
+        
+        // Match against Name, Tagline, or Tags array
+        const searchableText = [
+            product?.name || card.querySelector('h3')?.textContent,
+            product?.tagline || "",
+            ...(product?.tags || [])
+        ].join(' ').toLowerCase();
+
+        card.style.display = searchableText.includes(term) ? 'block' : 'none';
     });
 }
 
-function saveCart() { localStorage.setItem('empire_cart', JSON.stringify(cart)); }
+// === 6. WHATSAPP & CONTACT ===
+function submitOrder(event) {
+    event.preventDefault();
+    if (cart.length === 0) return toast("Selection is empty");
 
+    let message = `🛍️ *NEW ORDER - E'MPIRE*\n\n`;
+    cart.forEach(item => {
+        message += `• ${item.name} x${item.qty} = ₹${(item.price * item.qty).toLocaleString()}\n`;
+    });
+
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    message += `\n💰 *Total: ₹${total.toLocaleString()}*\n`;
+    message += `\n📍 Please confirm availability & delivery details.`;
+
+    window.open(`https://wa.me/919911261347?text=${encodeURIComponent(message)}`, '_blank');
+
+    cart = [];
+    saveCart();
+    updateCartUI();
+    toast("Order sent via WhatsApp!");
+}
+
+function submitContact(event) {
+    event.preventDefault();
+    const name = event.target.querySelector('input[type="text"]').value;
+    const email = event.target.querySelector('input[type="email"]').value;
+    const message = event.target.querySelector('textarea').value;
+    const whatsappMessage = `📩 *New Enquiry*\n\n👤 Name: ${name}\n📧 Email: ${email}\n💬 Message: ${message}`;
+    window.open(`https://wa.me/919911261347?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+    event.target.reset();
+}
+
+// === 7. UTILS ===
 function toggleCart(open) {
     const sidebar = document.getElementById('cartSidebar');
     if (!sidebar) return;
@@ -251,12 +310,6 @@ function toggleCart(open) {
 function toggleMenu() {
     const menu = document.getElementById('mobileMenu');
     if (menu) menu.classList.toggle('active');
-}
-
-function submitContact(event) {
-    event.preventDefault();
-    toast('Message sent to our concierge!');
-    event.target.reset();
 }
 
 function initScrollReveal() {
