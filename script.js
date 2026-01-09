@@ -10,11 +10,11 @@ const productDatabase = {
         originalPrice: 2800,
         img: 'images/Blush ELIXIR.jpg',
         tagline: "Soft • Floral • Elegant • Feminine • Luxurious",
-        description: "Blush Elixir is soft, sensual, and irresistibly elegant. It opens with a delicate burst of fresh fruits and gentle florals...",
-        details: "Romantic yet confident, sweet but never overpowering.",
-        top: "Pink Berries, Lychee",
-        heart: "Rose, Jasmine",
-        base: "Vanilla, Sandalwood",
+        description: "Blush Elixir is soft, sensual, and irresistibly elegant. It opens with a delicate burst of fresh fruits and gentle florals, creating a graceful and luminous first impression. The heart blooms with romantic petals and creamy sweetness, giving a refined feminine charm that feels modern and luxurious.",
+        details: "Blush Elixir is romantic yet confident, sweet but never overpowering — made for moments when elegance, charm, and quiet luxury define your presence.",
+        top: "Pink Berries, Lychee, Mandarin Blossom",
+        heart: "Rose Petals, Peony, Jasmine",
+        base: "White Musk, Vanilla, Sandalwood",
         tags: ['floral', 'sweet', 'feminine', 'elegant']
     },
     'whisky': {
@@ -23,13 +23,13 @@ const productDatabase = {
         price: 850,
         originalPrice: 2800,
         img: 'images/Smoked Whisky.jpg',
-        tagline: "Bold • Smoky • Masculine • Intense",
-        description: "A rich, complex blend of aged bourbon and charred oak.",
-        details: "A rich, masculine scent featuring charred oak.",
-        top: "Black Pepper",
-        heart: "Whisky, Tobacco",
-        base: "Oak, Amber",
-        tags: ['smoky', 'woody', 'whisky', 'masculine'],
+        tagline: "Warm • Smoky • Boozy • Luxurious • Powerful",
+        description: "Smoked Whiskey is deep, bold, and intoxicating. It opens with a warm smoky accord, like oak barrels kissed by fire, instantly giving a dark and mysterious character. The heart is rich and smooth, blending aged whiskey notes with subtle sweetness, creating a luxurious and addictive warmth.",
+        details: "This fragrance feels royal, confident, and intense — made for evenings, power moves, and statement moments.",
+        top: "Smoked Oak, Whiskey Accord, Light Spicy Pepper",
+        heart: "Charred Wood, Caramelized Amber, Toasted Vanilla",
+        base: "Dark Amber, Leather, Dry Woods, Soft Musk",
+        tags: ['bold', 'smoky', 'masculine', 'intense'],
         bestseller: true
     },
     'ocean': {
@@ -38,27 +38,13 @@ const productDatabase = {
         price: 850,
         originalPrice: 2800,
         img: 'images/Ocean Aura.jpg',
-        tagline: "Fresh • Aquatic • Breezy",
-        description: "The essence of the Mediterranean in a bottle.",
-        details: "Inspired by coastal breezes.",
-        top: "Sea Salt",
-        heart: "Neroli",
-        base: "Driftwood",
-        tags: ['fresh', 'aquatic', 'summer', 'clean']
-    },
-    'oud': {
-        id: 'oud',
-        name: "Royal Oud",
-        price: 899,
-        originalPrice: 2900,
-        img: 'images/p1.jpg',
-        tagline: "Majestic • Spicy • Deep",
-        description: "Liquid gold creation. Precious Cambodian Oud.",
-        details: "An unmistakable aura of power.",
-        top: "Saffron",
-        heart: "Oud, Rosewood",
-        base: "Sandalwood",
-        tags: ['oud', 'spicy', 'luxury', 'oriental']
+        tagline: "Fresh • Aquatic • Clean • Elegant • Premium",
+        description: "Ocean Aura is fresh, clean, and effortlessly luxurious. It opens like a cool ocean breeze at dawn — crisp, airy, and energizing. The fragrance carries the purity of deep blue waters blended with modern elegance, giving a calm yet confident presence.",
+        details: "Ocean Aura is fresh but not basic, cool yet commanding — perfect for daily wear, summer days, and moments where quiet confidence speaks louder than noise.",
+        top: "Marine Accord, Bergamot, Lemon Zest",
+        heart: "Sea Salt, Water Lily, Lavender",
+        base: "White Musk, Driftwood, Ambergris",
+        tags: ['fresh', 'aquatic', 'clean', 'modern']
     }
 };
 
@@ -84,7 +70,9 @@ window.onload = () => {
 };
 
 // === 2. AUTHENTICATION ===
-function updateNavAuth() {} // Placeholder for future logic
+function updateNavAuth() {
+    // Placeholder for future logic (e.g., showing 'Logout' if user exists)
+}
 
 function checkUser() {
     currentUser = JSON.parse(localStorage.getItem('empire_user'));
@@ -255,7 +243,6 @@ function performSearch(query = '') {
         const id = card.dataset.id;
         const product = productDatabase[id];
         
-        // Match against Name, Tagline, or Tags array
         const searchableText = [
             product?.name || card.querySelector('h3')?.textContent,
             product?.tagline || "",
