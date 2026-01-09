@@ -2,40 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Checkout — E'MPIRE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="checkout-page">
   <header class="nav">
-    <div class="nav-left"><span class="brand">E'MPIRE</span></div>
-    <div class="nav-right"><a href="index.html" class="btn ghost">← Back to Boutique</a></div>
+    <div class="nav-left">
+      <img src="images/logo.png" alt="E'MPIRE Logo" class="logo-img" style="height: 40px; width: auto;">
+      <span class="brand">E'MPIRE</span>
+    </div>
+    <div class="nav-right">
+        <a href="index.html" class="btn ghost small">← Back to Boutique</a>
+    </div>
   </header>
 
-  <main class="container section">
-    <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 350px; gap: 40px; margin-top: 40px;">
-      <div class="checkout-form-container">
-        <h3>Shipping & Payment</h3>
-        <form class="contact-form">
-          <input type="text" placeholder="Full Name" required>
-          <input type="tel" placeholder="Phone" required>
-          <textarea placeholder="Address" required></textarea>
-          <div class="payment-options" style="margin: 20px 0;">
-            <label><input type="radio" name="pay" checked> UPI (GPay/PhonePe)</label><br>
-            <label><input type="radio" name="pay"> Card</label>
+  <main class="container">
+    <div class="checkout-layout">
+      <div class="checkout-main">
+        <section class="checkout-section">
+          <h3>Shipping Information</h3>
+          
+          <div class="delivery-toggle">
+            <label class="toggle-option active">
+              <input type="radio" name="method" checked> 
+              <span class="icon">🚚</span> 
+              <span class="label">Delivery</span>
+            </label>
+            <label class="toggle-option">
+              <input type="radio" name="method"> 
+              <span class="icon">📦</span> 
+              <span class="label">Pick up</span>
+            </label>
           </div>
-          <button class="btn primary full-width">Place Order</button>
-        </form>
+
+          <form id="checkoutForm" class="modern-form" onsubmit="submitOrder(event)">
+            <div class="form-group">
+                <label>Full name *</label>
+                <input type="text" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label>Email address *</label>
+                <input type="email" placeholder="email@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>Phone number *</label>
+                <input type="tel" placeholder="+91 00000 00000" required>
+            </div>
+            <div class="form-group">
+                <label>Address *</label>
+                <textarea placeholder="Street, Building, Apartment" required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>ZIP Code</label>
+                    <input type="text" required>
+                </div>
+            </div>
+            
+            <div class="terms-check">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I have read and agree to the Terms and Conditions.</label>
+            </div>
+          </form>
+        </section>
       </div>
 
-      <div class="order-summary-card" style="background: #111; padding: 25px; border: 1px solid #333; border-radius: 12px;">
-        <h3>Summary</h3>
-        <div id="checkoutItems" style="margin-bottom: 20px;"></div>
-        <hr style="border: 0; border-top: 1px solid #222; margin-bottom: 20px;">
-        <div class="cart-total">Total: <span id="finalTotal" style="color: var(--gold-main); font-weight: bold;">₹0</span></div>
-      </div>
+      <aside class="checkout-sidebar">
+        <div class="summary-card">
+          <h3>Review your cart</h3>
+          <div id="checkoutItems" class="checkout-items-list">
+              </div>
+
+          <div class="discount-box">
+            <input type="text" placeholder="Discount code">
+            <button class="btn ghost small">Apply</button>
+          </div>
+
+          <div class="summary-totals">
+            <div class="total-row"><span>Subtotal</span><span id="subtotalValue">₹0</span></div>
+            <div class="total-row"><span>Shipping</span><span>FREE</span></div>
+            <hr>
+            <div class="total-row final"><span>Total</span><span id="finalTotal">₹0</span></div>
+          </div>
+
+          <button type="submit" form="checkoutForm" class="btn primary full-width">Pay Now</button>
+          
+          <div class="secure-badge">
+            <span class="icon">🔒</span> 
+            <div>
+                <strong>Secure Checkout — SSL Encrypted</strong>
+                <p>Ensuring your financial and personal details are secure.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   </main>
 
   <script src="script.js"></script>
+  <script>
+    // Initialize checkout totals on load
+    window.addEventListener('DOMContentLoaded', () => {
+        if (typeof updateCartUI === "function") updateCartUI();
+        renderCheckout();
+    });
+
+    function renderCheckout() {
+        const container = document.getElementById('checkoutItems');
+        const totalEl = document.getElementById('finalTotal');
+        const subtotalEl = document.getElementById('subtotalValue');
+        
+        let cart = JSON.parse(localStorage.getItem('empire_cart')) || [];
+        
+        if (cart.length === 0) {
+            container.innerHTML = "<p>Your cart is empty</p>";
+            return;
+        }
+
+        container.innerHTML = cart.map(item => `
+            <div class="checkout-item-mini">
+                <div class="item-info">
+                    <strong>${item.name}</strong>
+                    <span>${item.qty}x</span>
+                </div>
+                <div class="item-price">₹${(item.price * item.qty).toLocaleString()}</div>
+            </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        totalEl.innerText = `₹${total.toLocaleString()}`;
+        subtotalEl.innerText = `₹${total.toLocaleString()}`;
+    }
+  </script>
 </body>
 </html>
