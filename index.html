@@ -27,7 +27,8 @@
 
     <nav id="mobileMenu" class="mobile-menu-overlay">
       <a href="#home" onclick="toggleMenu()">Home</a>
-      <a href="#featured" onclick="toggleMenu()">Bestsellers</a>
+      <a href="#featured" onclick="toggleMenu()">Collection</a>
+      <a href="#about" onclick="toggleMenu()">The Founder</a>
       <a href="#contact" onclick="toggleMenu()">Contact</a>
     </nav>
   </header>
@@ -66,8 +67,9 @@
 
   <section id="featured" class="section">
     <div class="container">
-      <h2 class="section-title reveal-hidden">Bestsellers</h2>
-      <div class="product-scroll">
+      <h2 class="section-title reveal-hidden">The Collection</h2>
+      
+      <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px;">
         
         <article class="product-card reveal-hidden">
           <div class="product-media" onclick="viewProduct('whisky')">
@@ -75,18 +77,14 @@
           </div>
           <div class="product-body neesh-style">
             <h3 class="product-name">Smoked Whisky</h3>
-            <div class="product-meta">50 ml • Extrait De Parfum</div>
-            <p class="product-desc">
-              Bold, smoky and intense. A rich blend of aged bourbon and charred oak.
-            </p>
+            <div class="product-meta">50 ml • Eau De Parfum</div>
+            <p class="product-desc">Bold, smoky and intense. A rich blend of aged bourbon and charred oak.</p>
             <div class="price-block">
-              <span class="old-price">₹3200</span>
-              <span class="new-price">₹999</span>
+              <span class="old-price">₹2800</span>
+              <span class="new-price">₹850</span>
             </div>
             <div class="discount-text">UP TO 70% OFF</div>
-            <button class="btn primary small" onclick="addToCart('Smoked Whisky', 999)">
-              Add to Cart
-            </button>
+            <button class="btn primary small" onclick="addToCart('Smoked Whisky', 850)">Add to Cart</button>
           </div>
         </article>
 
@@ -96,18 +94,14 @@
           </div>
           <div class="product-body neesh-style">
             <h3 class="product-name">Ocean Aura</h3>
-            <div class="product-meta">50 ml • Extrait De Parfum</div>
-            <p class="product-desc">
-              Fresh aquatic essence. Capturing coastal breezes and Mediterranean salt.
-            </p>
+            <div class="product-meta">50 ml • Eau De Parfum</div>
+            <p class="product-desc">Fresh aquatic essence. Capturing coastal breezes and Mediterranean salt.</p>
             <div class="price-block">
-              <span class="old-price">₹2500</span>
-              <span class="new-price">₹799</span>
+              <span class="old-price">₹2800</span>
+              <span class="new-price">₹850</span>
             </div>
             <div class="discount-text">UP TO 70% OFF</div>
-            <button class="btn primary small" onclick="addToCart('Ocean Aura', 799)">
-              Add to Cart
-            </button>
+            <button class="btn primary small" onclick="addToCart('Ocean Aura', 850)">Add to Cart</button>
           </div>
         </article>
 
@@ -117,42 +111,54 @@
           </div>
           <div class="product-body neesh-style">
             <h3 class="product-name">Blush ELIXIR</h3>
-            <div class="product-meta">50 ml • Extrait De Parfum</div>
-            <p class="product-desc">
-              Soft, floral and gourmand fragrance crafted for all-day luxury wear.
-            </p>
+            <div class="product-meta">50 ml • Eau De Parfum</div>
+            <p class="product-desc">Soft, floral and gourmand fragrance crafted for all-day luxury wear.</p>
             <div class="price-block">
               <span class="old-price">₹2800</span>
               <span class="new-price">₹850</span>
             </div>
             <div class="discount-text">UP TO 70% OFF</div>
-            <button class="btn primary small" onclick="addToCart('Blush ELIXIR', 850)">
-              Add to Cart
-            </button>
+            <button class="btn primary small" onclick="addToCart('Blush ELIXIR', 850)">Add to Cart</button>
           </div>
         </article>
 
-        <article class="product-card reveal-hidden">
-          <div class="product-media" onclick="viewProduct('oud')">
-            <img src="images/p1.jpg" alt="Royal Oud">
-          </div>
-          <div class="product-body neesh-style">
-            <h3 class="product-name">Royal Oud</h3>
-            <div class="product-meta">50 ml • Extrait De Parfum</div>
-            <p class="product-desc">
-              Liquid gold creation. Majestic Cambodian Oud for an aura of power.
-            </p>
-            <div class="price-block">
-              <span class="old-price">₹2900</span>
-              <span class="new-price">₹899</span>
-            </div>
-            <div class="discount-text">UP TO 70% OFF</div>
-            <button class="btn primary small" onclick="addToCart('Royal Oud', 899)">
-              Add to Cart
-            </button>
-          </div>
-        </article>
+      </div>
 
+      <h2 class="section-title reveal-hidden" style="margin-top: 60px; font-size: 1.5rem; opacity: 0.7;">Future Essences</h2>
+      <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+        <div class="product-card reveal-hidden" style="opacity: 0.6; border: 1px dashed var(--gold-main);">
+          <div style="height: 250px; display: flex; align-items: center; justify-content: center; background: #050505; color: var(--gold-main); font-family: 'Cinzel';">COMING SOON</div>
+        </div>
+        <div class="product-card reveal-hidden" style="opacity: 0.6; border: 1px dashed var(--gold-main);">
+          <div style="height: 250px; display: flex; align-items: center; justify-content: center; background: #050505; color: var(--gold-main); font-family: 'Cinzel';">COMING SOON</div>
+        </div>
+        <div class="product-card reveal-hidden" style="opacity: 0.6; border: 1px dashed var(--gold-main);">
+          <div style="height: 250px; display: flex; align-items: center; justify-content: center; background: #050505; color: var(--gold-main); font-family: 'Cinzel';">COMING SOON</div>
+        </div>
+        <div class="product-card reveal-hidden" style="opacity: 0.6; border: 1px dashed var(--gold-main);">
+          <div style="height: 250px; display: flex; align-items: center; justify-content: center; background: #050505; color: var(--gold-main); font-family: 'Cinzel';">COMING SOON</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section about-founder" style="padding: 100px 0; background: #050505; border-top: 1px solid rgba(212,175,55,0.1);">
+    <div class="container reveal-hidden">
+      <div class="about-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h3 style="letter-spacing: 5px; color: var(--gold-main); margin-bottom: 15px; font-size: 14px;">👑 THE VISIONARY</h3>
+        <h2 class="gold-text" style="font-size: clamp(32px, 5vw, 48px); font-family: 'Playfair Display', serif; margin-bottom: 40px; letter-spacing: 2px;">AMRIT MOHANTY</h2>
+        
+        <div class="about-text-body" style="text-align: justify; text-justify: inter-word;">
+          <p style="color: #ccc; line-height: 2; margin-bottom: 25px; font-size: 17px; font-weight: 300;">
+            Amrit Mohanty is the visionary founder behind <strong style="color: var(--gold-light);">E'MPIRE</strong>, driven by a passion for excellence, creativity, and building meaningful brands. With a strong entrepreneurial mindset and a deep appreciation for luxury aesthetics, Amrit set out to create a fragrance brand that represents confidence, individuality, and timeless elegance.
+          </p>
+          <p style="color: #ccc; line-height: 2; margin-bottom: 25px; font-size: 17px; font-weight: 300;">
+            E'MPIRE was founded with the vision of delivering premium-quality fragrances that blend global inspiration with modern lifestyle aspirations. Every product reflects attention to detail — from carefully crafted scent profiles to elegant packaging — ensuring a refined and lasting experience for every customer.
+          </p>
+          <p style="color: #ccc; line-height: 2; font-size: 17px; font-weight: 300; font-style: italic; text-align: center; border-left: 2px solid var(--gold-main); padding-left: 20px; margin-top: 40px;">
+            "Amrit believes that a fragrance is more than just a scent; it is a powerful expression of personality and ambition. Through E'MPIRE, he aims to build a brand that inspires people to stand out, own their identity, and leave a lasting impression."
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -183,7 +189,8 @@
       <div class="footer-column">
         <h4>Explore</h4>
         <a href="#home">Home</a>
-        <a href="#featured">Bestsellers</a>
+        <a href="#featured">Collection</a>
+        <a href="#about">The Founder</a>
         <a href="#contact">Contact</a>
       </div>
       <div class="footer-column">
