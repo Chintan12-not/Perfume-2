@@ -1,8 +1,7 @@
 /* ================================================================
    LUXURY E-COMMERCE MASTER STYLESHEET
    Themes: Gold, Deep Black, Cinematic Typography
-================================================================
-*/
+================================================================ */
 
 /* === THEME VARIABLES === */
 :root {
@@ -201,6 +200,115 @@ body {
     color: var(--gold-main); 
 }
 
+/* === MODERN CHECKOUT LAYOUT === */
+.checkout-page {
+    background: #f9f9f9; 
+    color: #111;
+}
+
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+    padding: 120px 0 60px;
+}
+
+.checkout-main, .summary-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.delivery-toggle {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.toggle-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #444;
+}
+
+.toggle-option.active {
+    border: 2px solid var(--gold-main);
+    background: #fffcf0;
+}
+
+.modern-form .form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modern-form label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.modern-form input, .modern-form textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    background: white;
+    color: #111;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.checkout-item-mini {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.discount-box {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.discount-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+
+.summary-totals .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    color: #666;
+}
+
+.total-row.final {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+
+.secure-badge {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: #888;
+}
+
+.full-width { width: 100%; margin-top: 20px; }
+
 /* === PRODUCT CARD & LISTING STYLES === */
 .neesh-style {
     font-family: 'Inter', sans-serif;
@@ -257,7 +365,6 @@ body {
     margin-bottom: 14px;
 }
 
-/* Pricing UI */
 .price-block { margin: 10px 0; }
 
 .old-price {
@@ -445,6 +552,14 @@ body {
 
 .footer-bottom { text-align: center; margin-top: 50px; font-size: 13px; color: #aaa; }
 
+/* About Founder Section */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 60px;
+    align-items: center;
+}
+
 /* === WHATSAPP FLOAT === */
 .whatsapp-float {
     position: fixed;
@@ -467,6 +582,10 @@ body {
 .whatsapp-float:hover { transform: scale(1.1); }
 
 /* === RESPONSIVE STYLES === */
+@media (max-width: 992px) {
+    .checkout-layout { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 768px) {
     .nav { padding: 0 20px; }
     
@@ -497,4 +616,13 @@ body {
     }
     .quantity-selector { margin-right: 0; }
     .btn { width: 100%; }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .about-image-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
 }
