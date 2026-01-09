@@ -12,11 +12,11 @@
 
   <header class="nav">
     <div class="nav-left">
-      <img src="images/logo.jpg" alt="E'MPIRE Logo" class="logo-img">
+      <img src="images/logo.png" alt="E'MPIRE Logo" class="logo-img" style="height: 40px; width: auto;">
       <span class="brand">E'MPIRE</span>
     </div>
     <div class="nav-right">
-      <a href="index.html#featured" class="btn ghost small">← Back to Boutique</a>
+      <a href="index.html" class="btn ghost small">← Back to Boutique</a>
       <button id="cartBtn" class="icon-btn" onclick="toggleCart()" style="margin-left: 15px;">
         🛒 <span id="cartCount">0</span>
       </button>
@@ -56,14 +56,19 @@
 
   <script src="script.js"></script>
   <script>
-    // This script runs specifically for this page to fetch the ID from the URL
     window.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
         
         if (productId) {
-            renderProductDetail(productId);
-            updateCartUI(); // Ensure the cart count/sidebar is accurate
+            // Ensure renderProductDetail exists in script.js
+            if (typeof renderProductDetail === "function") {
+                renderProductDetail(productId);
+            }
+            // Ensure updateCartUI exists in script.js
+            if (typeof updateCartUI === "function") {
+                updateCartUI(); 
+            }
         } else {
             // Redirect back to boutique if no ID is found
             window.location.href = 'index.html';
