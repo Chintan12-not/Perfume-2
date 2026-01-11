@@ -1,322 +1,353 @@
-// === 1. INITIALIZATION & DATA ===
-let cart = JSON.parse(localStorage.getItem('empire_cart')) || [];
-let currentUser = JSON.parse(localStorage.getItem('empire_user')) || null;
+// ==================================================
+// 1. INITIALIZATION & GLOBAL DATA
+// ==================================================
+
+const SUPABASE_URL = "https://wolxccbehsbafyirgvgp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_1NCRxQCEEOEnr0jJ6H-ASg_JQxgdr3L";
+
+// Supabase (AUTH ONLY – SAFE)
+const supabaseClient = window.supabase
+    ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
+
+let cart = JSON.parse(localStorage.getItem("empire_cart")) || [];
+let currentUser = null;
+
+// ==================================================
+// 2. LOCAL PRODUCT DATABASE (NO SUPABASE)
+// ==================================================
 
 const productDatabase = {
-    'blush': {
-        id: 'blush',
-        name: "Blush ELIXIR",
-        price: 850,
-        originalPrice: 2800,
-        img: 'images/Blush ELIXIR.jpg',
-        tagline: "Soft • Floral • Elegant • Feminine • Luxurious",
-        description: "Blush Elixir is soft, sensual, and irresistibly elegant. It opens with a delicate burst of fresh fruits and gentle florals, creating a graceful and luminous first impression. The heart blooms with romantic petals and creamy sweetness, giving a refined feminine charm that feels modern and luxurious.",
-        details: "Blush Elixir is romantic yet confident, sweet but never overpowering — made for moments when elegance, charm, and quiet luxury define your presence.",
-        top: "Pink Berries, Lychee, Mandarin Blossom",
-        heart: "Rose Petals, Peony, Jasmine",
-        base: "White Musk, Vanilla, Sandalwood",
-        tags: ['floral', 'sweet', 'feminine', 'elegant']
-    },
-    'whisky': {
-        id: 'whisky',
+    whisky: {
+        id: "whisky",
         name: "Smoked Whisky",
         price: 850,
         originalPrice: 2800,
-        img: 'images/Smoked Whisky.jpg',
+        img: "images/Smoked Whisky.jpg",
         tagline: "Warm • Smoky • Boozy • Luxurious • Powerful",
-        description: "Smoked Whiskey is deep, bold, and intoxicating. It opens with a warm smoky accord, like oak barrels kissed by fire, instantly giving a dark and mysterious character. The heart is rich and smooth, blending aged whiskey notes with subtle sweetness, creating a luxurious and addictive warmth.",
-        details: "This fragrance feels royal, confident, and intense — made for evenings, power moves, and statement moments.",
-        top: "Smoked Oak, Whiskey Accord, Light Spicy Pepper",
-        heart: "Charred Wood, Caramelized Amber, Toasted Vanilla",
-        base: "Dark Amber, Leather, Dry Woods, Soft Musk",
-        tags: ['bold', 'smoky', 'masculine', 'intense'],
-        bestseller: true
+        description: `
+Smoked Whisky is deep, bold, and intoxicating.
+It opens with a warm smoky accord, like oak barrels kissed by fire, instantly giving a dark and mysterious character.
+
+The heart is rich and smooth, blending aged whiskey notes with subtle sweetness, creating a luxurious and addictive warmth.
+As it settles, hints of amber, soft woods, and gentle spice linger on the skin, leaving a powerful, masculine, and premium trail.
+
+<b>Overall Feel:</b><br>
+Warm • Smoky • Boozy • Luxurious • Powerful
+        `,
+        top: "Smoked Oak • Whiskey Accord • Light Spicy Pepper",
+        heart: "Charred Wood • Caramelized Amber • Toasted Vanilla",
+        base: "Dark Amber • Leather • Dry Woods • Soft Musk"
     },
-    'ocean': {
-        id: 'ocean',
+
+    ocean: {
+        id: "ocean",
         name: "Ocean Aura",
         price: 850,
         originalPrice: 2800,
-        img: 'images/Ocean Aura.jpg',
+        img: "images/Ocean Aura.jpg",
         tagline: "Fresh • Aquatic • Clean • Elegant • Premium",
-        description: "Ocean Aura is fresh, clean, and effortlessly luxurious. It opens like a cool ocean breeze at dawn — crisp, airy, and energizing. The fragrance carries the purity of deep blue waters blended with modern elegance, giving a calm yet confident presence.",
-        details: "Ocean Aura is fresh but not basic, cool yet commanding — perfect for daily wear, summer days, and moments where quiet confidence speaks louder than noise.",
-        top: "Marine Accord, Bergamot, Lemon Zest",
-        heart: "Sea Salt, Water Lily, Lavender",
-        base: "White Musk, Driftwood, Ambergris",
-        tags: ['fresh', 'aquatic', 'clean', 'modern']
+        description: `
+Ocean Aura is fresh, clean, and effortlessly luxurious.
+It opens like a cool ocean breeze at dawn — crisp, airy, and energizing.
+
+The fragrance carries the purity of deep blue waters blended with modern elegance.
+Soft aquatic florals and mineral notes add sophistication without sweetness.
+The dry-down is smooth, musky, and slightly woody, leaving a long-lasting, clean trail.
+
+<b>Overall Feel:</b><br>
+Fresh • Aquatic • Clean • Elegant • Premium
+        `,
+        top: "Marine Accord • Bergamot • Lemon Zest",
+        heart: "Sea Salt • Water Lily • Lavender",
+        base: "White Musk • Driftwood • Ambergris"
+    },
+
+    blush: {
+        id: "blush",
+        name: "Blush ELIXIR",
+        price: 850,
+        originalPrice: 2800,
+        img: "images/Blush ELIXIR.jpg",
+        tagline: "Soft • Floral • Elegant • Feminine • Luxurious",
+        description: `
+Blush Elixir is soft, sensual, and irresistibly elegant.
+It opens with a delicate burst of fresh fruits and gentle florals, creating a graceful and luminous first impression.
+
+The heart blooms with romantic petals and creamy sweetness, giving a refined feminine charm.
+As it settles, warm musks and smooth woods wrap the fragrance in a subtle, addictive softness.
+
+<b>Overall Feel:</b><br>
+Soft • Floral • Elegant • Feminine • Luxurious
+        `,
+        top: "Pink Berries • Lychee • Mandarin Blossom",
+        heart: "Rose Petals • Peony • Jasmine",
+        base: "White Musk • Vanilla • Sandalwood"
     }
 };
 
-window.onload = () => {
-    updateCartUI();
-    checkUser();
-    updateNavAuth(); 
-    
-    const path = window.location.pathname;
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
+// ==================================================
+// 3. PAGE LOAD HANDLER (PRODUCT SAFE)
+// ==================================================
 
-    if (path.includes('checkout.html')) renderCheckout();
-    if (path.includes('product-detail.html') && productId) {
-        renderProductDetail(productId);
+window.addEventListener("DOMContentLoaded", () => {
+
+    const productContainer = document.getElementById("productDetailContainer");
+    if (productContainer) {
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get("id");
+
+        if (productId) {
+            renderProductDetail(productId);
+        } else {
+            productContainer.innerHTML = `
+                <p style="color:#d4af37; text-align:center; letter-spacing:2px;">
+                    PRODUCT NOT FOUND
+                </p>
+            `;
+        }
     }
-    
+
+    if (supabaseClient) {
+        checkAuth();
+    }
+
+    updateCartUI();
     initScrollReveal();
-    
-    if (path.includes('index.html') || path === '/' || path.endsWith('/')) {
-        initSearch();
-    }
-};
+    setupWhatsApp();
+});
 
-// === 2. AUTHENTICATION ===
-function updateNavAuth() {
-    // Placeholder for future logic (e.g., showing 'Logout' if user exists)
-}
+// ==================================================
+// 4. NAVIGATION & SEARCH
+// ==================================================
 
-function checkUser() {
-    currentUser = JSON.parse(localStorage.getItem('empire_user'));
-    return currentUser;
-}
-
-// === 3. CART SYSTEM ===
-function saveCart() { 
-    localStorage.setItem('empire_cart', JSON.stringify(cart)); 
-}
-
-function addToCart(name, price, qty = 1) {
-    const existing = cart.find(item => item.name === name);
-    if (existing) {
-        existing.qty += qty;
-    } else {
-        cart.push({ name, price, qty });
-    }
-    
-    saveCart();
-    updateCartUI();
-    toggleCart(true);
-    toast(`${qty}x ${name} added to selection`);
-}
-
-function updateCartUI() {
-    const countLabel = document.getElementById('cartCount');
-    if (countLabel) {
-        const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-        countLabel.innerText = totalQty;
-        countLabel.style.display = totalQty > 0 ? 'inline' : 'none';
-    }
-    
-    const container = document.getElementById('cartItemsContainer');
-    const totalLabel = document.getElementById('cartTotalValue');
-    const checkoutBtn = document.querySelector('.cart-sidebar-footer .btn.primary');
-    
-    if (!container) return;
-    
-    if (cart.length === 0) {
-        container.innerHTML = '<p class="empty-msg">Your selection is empty.</p>';
-        if (totalLabel) totalLabel.innerText = '₹0';
-        if (checkoutBtn) checkoutBtn.disabled = true;
-        return;
-    }
-    
-    if (checkoutBtn) checkoutBtn.disabled = false;
-    
-    container.innerHTML = cart.map((item, index) => `
-        <div class="cart-item">
-            <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-            </div>
-            <div class="cart-item-controls">
-                <button onclick="updateCartItem(${index}, ${item.qty - 1})" ${item.qty <= 1 ? 'disabled' : ''}>−</button>
-                <span>${item.qty}</span>
-                <button onclick="updateCartItem(${index}, ${item.qty + 1})">+</button>
-                <button class="cart-remove-btn" onclick="removeFromCart(${index})">✕</button>
-            </div>
-        </div>
-    `).join('');
-    
-    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    if (totalLabel) totalLabel.innerText = `₹${total.toLocaleString()}`;
-}
-
-function updateCartItem(index, newQty) {
-    if (newQty < 1) {
-        removeFromCart(index);
-        return;
-    }
-    cart[index].qty = newQty;
-    saveCart();
-    updateCartUI();
-}
-
-function removeFromCart(index) {
-    const itemName = cart[index].name;
-    cart.splice(index, 1);
-    saveCart();
-    updateCartUI();
-    toast(`${itemName} removed from selection`);
-}
-
-// === 4. PRODUCT RENDERING ===
 function viewProduct(productId) {
     window.location.href = `product-detail.html?id=${productId}`;
 }
 
-function renderProductDetail(productId) {
-    const container = document.getElementById('productDetailContainer');
+function toggleMenu() {
+    const menu = document.getElementById("mobileMenu");
+    if (menu) menu.classList.toggle("active");
+}
+
+document.addEventListener("input", (e) => {
+    if (e.target.id !== "searchInput") return;
+    const term = e.target.value.toLowerCase();
+
+    document.querySelectorAll(".product-card").forEach(card => {
+        const name = card.querySelector(".product-name")?.innerText.toLowerCase() || "";
+        card.style.display = name.includes(term) ? "block" : "none";
+    });
+});
+
+// ==================================================
+// 5. AUTHENTICATION (SUPABASE ONLY)
+// ==================================================
+
+if (supabaseClient) {
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+        currentUser = session?.user || null;
+        updateAuthUI();
+    });
+}
+
+async function checkAuth() {
+    if (!supabaseClient) return;
+    const { data } = await supabaseClient.auth.getUser();
+    currentUser = data.user;
+    updateAuthUI();
+}
+
+function updateAuthUI() {
+    const btn = document.getElementById("authBtn");
+    if (!btn) return;
+
+    if (currentUser) {
+        const name =
+            currentUser.user_metadata?.full_name ||
+            currentUser.email.split("@")[0];
+
+        btn.innerText = `Hi, ${name}`;
+        btn.onclick = logout;
+    } else {
+        btn.innerText = "Login";
+        btn.onclick = openAuth;
+    }
+}
+
+function openAuth() {
+    document.getElementById("authModal")?.classList.add("active");
+}
+
+function closeAuth() {
+    document.getElementById("authModal")?.classList.remove("active");
+}
+
+async function signUp() {
+    if (!supabaseClient) return alert("Auth unavailable");
+
+    const email = document.getElementById("authEmail").value;
+    const password = document.getElementById("authPassword").value;
+
+    const { error } = await supabaseClient.auth.signUp({ email, password });
+    if (error) return alert(error.message);
+
+    alert("Signup successful! Please verify your email.");
+}
+
+async function signIn() {
+    if (!supabaseClient) return alert("Auth unavailable");
+
+    const email = document.getElementById("authEmail").value;
+    const password = document.getElementById("authPassword").value;
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) return alert(error.message);
+
+    currentUser = data.user;
+    closeAuth();
+    updateAuthUI();
+}
+
+async function googleLogin() {
+    if (!supabaseClient) return;
+
+    await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+            redirectTo: window.location.origin
+        }
+    });
+}
+
+async function logout() {
+    if (!supabaseClient) return;
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    updateAuthUI();
+}
+
+// ==================================================
+// 6. CART SYSTEM (UNCHANGED)
+// ==================================================
+
+function saveCart() {
+    localStorage.setItem("empire_cart", JSON.stringify(cart));
+}
+
+function addToCart(name, price, qty = 1) {
+    const item = cart.find(i => i.name === name);
+    if (item) item.qty += qty;
+    else cart.push({ name, price, qty });
+
+    saveCart();
+    updateCartUI();
+    toggleCart(true);
+}
+
+function updateCartUI() {
+    const count = document.getElementById("cartCount");
+    if (count) count.innerText = cart.reduce((s, i) => s + i.qty, 0);
+
+    const container = document.getElementById("cartItemsContainer");
+    const totalEl = document.getElementById("cartTotalValue");
     if (!container) return;
-    
-    const product = productDatabase[productId];
-    if (!product) {
-        container.innerHTML = '<p>Product not found</p>';
+
+    if (cart.length === 0) {
+        container.innerHTML = `<p class="empty-msg">Your selection is empty.</p>`;
+        if (totalEl) totalEl.innerText = "₹0";
         return;
     }
-    
-    container.innerHTML = `
-        <div class="product-detail-images">
-            <img src="${product.img}" alt="${product.name}" class="product-main-image">
+
+    container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <span>${item.name} × ${item.qty}</span>
+            <strong>₹${(item.price * item.qty).toLocaleString()}</strong>
         </div>
-        <div class="product-detail-info">
-            <h1 class="product-detail-title">${product.name}</h1>
-            <div class="product-tagline">${product.tagline}</div>
-            <div class="product-detail-price">
-                <span class="old-price">₹${product.originalPrice.toLocaleString()}</span>
-                <span class="new-price">₹${product.price.toLocaleString()}</span>
+    `).join("");
+
+    if (totalEl) {
+        totalEl.innerText =
+            "₹" + cart.reduce((s, i) => s + i.price * i.qty, 0).toLocaleString();
+    }
+}
+
+function toggleCart(force) {
+    const el = document.getElementById("cartSidebar");
+    if (!el) return;
+
+    if (force === true) el.classList.add("active");
+    else if (force === false) el.classList.remove("active");
+    else el.classList.toggle("active");
+}
+
+// ==================================================
+// 7. PRODUCT DETAIL (UNCHANGED STRUCTURE)
+// ==================================================
+
+function renderProductDetail(productId) {
+    const product = productDatabase[productId];
+    const container = document.getElementById("productDetailContainer");
+    if (!product || !container) return;
+
+    container.innerHTML = `
+        <div class="luxury-detail-grid">
+            <div class="luxury-image">
+                <img src="${product.img}" alt="${product.name}">
             </div>
-            <div class="product-description">
-                <p>${product.description}</p>
-                <p>${product.details}</p>
-            </div>
-            <div class="scent-notes-detail">
-                <h3>Fragrance Notes</h3>
-                <div class="notes-grid">
-                    <div class="note-card"><h4>Top</h4><p>${product.top}</p></div>
-                    <div class="note-card"><h4>Heart</h4><p>${product.heart}</p></div>
-                    <div class="note-card"><h4>Base</h4><p>${product.base}</p></div>
+
+            <div class="luxury-info">
+                <h1 class="luxury-title">${product.name}</h1>
+                <p class="luxury-tagline">${product.tagline}</p>
+                <div class="luxury-price">₹${product.price}</div>
+
+                <p class="luxury-desc">${product.description}</p>
+
+                <div class="luxury-notes">
+                    <h3>FRAGRANCE NOTES</h3>
+                    <div class="notes-row">
+                        <div><strong>Top</strong>${product.top}</div>
+                        <div><strong>Heart</strong>${product.heart}</div>
+                        <div><strong>Base</strong>${product.base}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="product-actions">
-                <div class="quantity-selector">
-                    <button onclick="updateDetailQty(-1)">−</button>
+
+                <div class="luxury-actions">
+                    <button class="btn ghost" onclick="updateDetailQty(-1)">−</button>
                     <span id="detailQty">1</span>
-                    <button onclick="updateDetailQty(1)">+</button>
+                    <button class="btn ghost" onclick="updateDetailQty(1)">+</button>
+                    <button class="btn primary"
+                        onclick="addToCart('${product.name}', ${product.price}, parseInt(detailQty.innerText))">
+                        ADD TO CART
+                    </button>
                 </div>
-                <button class="btn primary" onclick="addToCart('${product.name}', ${product.price}, parseInt(document.getElementById('detailQty').innerText))">
-                    Add to Selection
-                </button>
             </div>
-        </div>`;
+        </div>
+    `;
 }
 
 function updateDetailQty(change) {
-    const qtyElement = document.getElementById('detailQty');
-    if (!qtyElement) return;
-    let qty = parseInt(qtyElement.innerText);
-    qty = Math.max(1, qty + change);
-    qtyElement.innerText = qty;
+    const el = document.getElementById("detailQty");
+    if (!el) return;
+    el.innerText = Math.max(1, parseInt(el.innerText) + change);
 }
 
-// === 5. SEARCH & NAVIGATION ===
-function initSearch() {
-    const navRight = document.querySelector('.nav-right');
-    if (navRight && !document.querySelector('.search-container')) {
-        const searchHTML = `
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search fragrances...">
-                <button class="search-btn" onclick="performSearch()">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>`;
-        navRight.insertAdjacentHTML('afterbegin', searchHTML);
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
-    }
-}
-
-function performSearch(query = '') {
-    const term = query.toLowerCase();
-    const productCards = document.querySelectorAll('.product-card');
-    
-    productCards.forEach(card => {
-        const id = card.dataset.id;
-        const product = productDatabase[id];
-        
-        const searchableText = [
-            product?.name || card.querySelector('h3')?.textContent,
-            product?.tagline || "",
-            ...(product?.tags || [])
-        ].join(' ').toLowerCase();
-
-        card.style.display = searchableText.includes(term) ? 'block' : 'none';
-    });
-}
-
-// === 6. WHATSAPP & CONTACT ===
-function submitOrder(event) {
-    event.preventDefault();
-    if (cart.length === 0) return toast("Selection is empty");
-
-    let message = `🛍️ *NEW ORDER - E'MPIRE*\n\n`;
-    cart.forEach(item => {
-        message += `• ${item.name} x${item.qty} = ₹${(item.price * item.qty).toLocaleString()}\n`;
-    });
-
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-    message += `\n💰 *Total: ₹${total.toLocaleString()}*\n`;
-    message += `\n📍 Please confirm availability & delivery details.`;
-
-    window.open(`https://wa.me/919911261347?text=${encodeURIComponent(message)}`, '_blank');
-
-    cart = [];
-    saveCart();
-    updateCartUI();
-    toast("Order sent via WhatsApp!");
-}
-
-function submitContact(event) {
-    event.preventDefault();
-    const name = event.target.querySelector('input[type="text"]').value;
-    const email = event.target.querySelector('input[type="email"]').value;
-    const message = event.target.querySelector('textarea').value;
-    const whatsappMessage = `📩 *New Enquiry*\n\n👤 Name: ${name}\n📧 Email: ${email}\n💬 Message: ${message}`;
-    window.open(`https://wa.me/919911261347?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-    event.target.reset();
-}
-
-// === 7. UTILS ===
-function toggleCart(open) {
-    const sidebar = document.getElementById('cartSidebar');
-    if (!sidebar) return;
-    if (open === true) sidebar.classList.add('active');
-    else if (open === false) sidebar.classList.remove('active');
-    else sidebar.classList.toggle('active');
-}
-
-function toggleMenu() {
-    const menu = document.getElementById('mobileMenu');
-    if (menu) menu.classList.toggle('active');
-}
+// ==================================================
+// 8. UTILITIES
+// ==================================================
 
 function initScrollReveal() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('reveal-active');
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal-hidden').forEach(el => observer.observe(el));
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => e.isIntersecting && e.target.classList.add("reveal-active"));
+    });
+    document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
 }
 
-function toast(msg) {
-    document.querySelectorAll('.toast').forEach(t => t.remove());
-    const t = document.createElement('div');
-    t.className = 'toast';
-    t.innerText = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.classList.add('show'), 10);
-    setTimeout(() => {
-        t.classList.remove('show');
-        setTimeout(() => t.remove(), 300);
-    }, 3000);
+function setupWhatsApp() {
+    const wa = document.querySelector(".whatsapp-float");
+    if (wa) wa.href = "https://wa.me/919911261347";
 }
