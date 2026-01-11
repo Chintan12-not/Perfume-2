@@ -4,76 +4,54 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Product Details — E'MPIRE</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <header class="nav">
-    <div class="nav-left">
-      <img src="images/logo.png" alt="E'MPIRE Logo" class="logo-img" style="height: 40px; width: auto;">
-      <span class="brand">E'MPIRE</span>
-    </div>
-    <div class="nav-right">
-      <a href="index.html" class="btn ghost small">← Back to Boutique</a>
-      <button id="cartBtn" class="icon-btn" onclick="toggleCart()" style="margin-left: 15px;">
-        🛒 <span id="cartCount">0</span>
-      </button>
-    </div>
-  </header>
+<header class="nav">
+  <div class="nav-left">
+    <img src="images/logo.png" alt="E'MPIRE Logo" class="logo-img">
+    <span class="brand">E'MPIRE</span>
+  </div>
+  <div class="nav-right">
+    <a href="index.html" class="btn ghost small">← Back</a>
+    <button class="icon-btn" onclick="toggleCart()">
+      🛒 <span id="cartCount">0</span>
+    </button>
+  </div>
+</header>
 
-  <div id="cartSidebar" class="cart-sidebar">
-    <div class="cart-sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>Selection</h3>
-      <button class="icon-btn" onclick="toggleCart()">✕</button>
-    </div>
-    <div id="cartItemsContainer" class="cart-items-body" style="flex:1; overflow-y:auto; padding: 20px 0;">
-      <p class="empty-msg">Your selection is empty.</p>
-    </div>
-    <div class="cart-sidebar-footer" style="padding-top: 20px; border-top: 1px solid #222;">
-      <div class="cart-total" style="display:flex; justify-content:space-between; margin-bottom: 20px; font-weight: bold;">
-        <span>Total:</span>
-        <span id="cartTotalValue">₹0</span>
-      </div>
-      <button class="btn primary" style="width:100%;" onclick="location.href='checkout.html'">Checkout</button>
+<div id="cartSidebar" class="cart-sidebar">
+  <div class="cart-sidebar-header">
+    <h3>Selection</h3>
+    <button class="icon-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div id="cartItemsContainer"></div>
+  <div class="cart-sidebar-footer">
+    <span>Total: <strong id="cartTotalValue">₹0</strong></span>
+    <button class="btn primary" onclick="location.href='checkout.html'">Checkout</button>
+  </div>
+</div>
+
+<main class="container">
+  <div id="productDetailContainer" class="luxury-detail-wrapper detail-grid">
+    <div class="loader-wrapper" style="grid-column: 1/-1; text-align: center; padding: 120px 0;">
+      <p class="loader" style="color: #d4af37; letter-spacing: 3px; font-family: 'Cinzel', serif;">
+        PREPARING YOUR EXPERIENCE...
+      </p>
     </div>
   </div>
+</main>
 
-  <main class="container">
-    <div class="detail-grid" id="productDetailContainer">
-        <div style="grid-column: 1 / -1; text-align: center; padding: 100px 0;">
-            <p style="color: var(--gold-main); letter-spacing: 2px;">PREPARING YOUR EXPERIENCE...</p>
-        </div>
-    </div>
-  </main>
+<footer class="main-footer">
+  <div class="container footer-bottom">
+    <p>COPYRIGHT © 2026, E'MPIRE PERFUMES</p>
+  </div>
+</footer>
 
-  <footer class="main-footer">
-    <div class="container footer-bottom">
-      <p>COPYRIGHT © 2026, E'MPIRE PERFUMES</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id');
-        
-        if (productId) {
-            // Ensure renderProductDetail exists in script.js
-            if (typeof renderProductDetail === "function") {
-                renderProductDetail(productId);
-            }
-            // Ensure updateCartUI exists in script.js
-            if (typeof updateCartUI === "function") {
-                updateCartUI(); 
-            }
-        } else {
-            // Redirect back to boutique if no ID is found
-            window.location.href = 'index.html';
-        }
-    });
-  </script>
+<script src="script.js"></script>
 </body>
 </html>
